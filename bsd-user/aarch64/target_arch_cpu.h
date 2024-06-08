@@ -171,4 +171,21 @@ static inline void target_cpu_loop(CPUARMState *env)
     } /* for (;;) */
 }
 
+
+/* See arm64/arm64/vm_machdep.c cpu_fork() */
+static inline void target_cpu_clone_regs(CPUARMState *env, target_ulong newsp)
+{
+    if (newsp) {
+        env->xregs[31] = newsp;
+    }
+    env->regs[0] = 0;
+    env->regs[1] = 0;
+    pstate_write(env, 0);
+}
+
+static inline void target_cpu_reset(CPUArchState *env)
+{
+}
+
+
 #endif /* TARGET_ARCH_CPU_H */
