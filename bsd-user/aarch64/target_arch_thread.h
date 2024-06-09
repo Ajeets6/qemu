@@ -42,4 +42,20 @@ static inline void target_thread_set_upcall(CPUARMState *regs, abi_ulong entry,
     pstate_write(regs, PSTATE_MODE_EL0t);
 }
 
+static inline void target_thread_init(struct target_pt_regs *regs,
+        struct image_info *infop)
+{
+    abi_long stack = infop->start_stack;
+
+    /*
+     * Make sure the stack is properly aligned.
+     * arm64/include/param.h (STACKLIGN() macro)
+     */
+
+    memset(regs, 0, sizeof(*regs));
+    regs->regs[0] = infop->start_stack;
+    regs->pc = infop->entry;
+    regs->sp = stack & ~(16 - 1);
+}
+
 #endif /* TARGET_ARCH_THREAD_H */
